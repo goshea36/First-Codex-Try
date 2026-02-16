@@ -1,48 +1,226 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Exam FM Study Planner</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: #f5f7fb;
+      color: #202938;
+      padding: 2rem 1rem;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      padding: 1.5rem;
+    }
+
+    h1,
+    h2 {
+      margin-top: 0;
+    }
+
+    .input-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+    }
+
+    input {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 0.5rem;
+      border: 1px solid #c7d2e3;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+
+    button {
+      background: #2c5fd5;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 0.6rem 1rem;
+      font-size: 1rem;
+      cursor: pointer;
+      margin: 0.5rem 0 1rem;
+    }
+
+    button:hover {
+      background: #244fb3;
+    }
+
+    .topics-box {
+      background: #f0f4fc;
+      border: 1px solid #dce6f8;
+      border-radius: 10px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    ul {
+      margin: 0.5rem 0 0;
+      padding-left: 1.25rem;
+    }
+
+    .result-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .result-item {
+      border: 1px solid #dce6f8;
+      border-radius: 10px;
+      padding: 0.8rem;
+      background: #fbfcff;
+    }
+
+    .result-label {
+      font-size: 0.9rem;
+      color: #4b5e80;
+      margin-bottom: 0.2rem;
+    }
+
+    .result-value {
+      font-size: 1.2rem;
+      font-weight: 700;
+    }
+
+    .warning {
+      color: #b74e00;
+      font-weight: 600;
+      margin-top: 0.8rem;
+    }
+  </style>
 </head>
 <body>
-  <h1>Exam FM Study Planner</h1>
+  <main class="container">
+    <h1>Exam FM Study Planner</h1>
+    <p>Starting from the beginning with a 20-hour/week schedule.</p>
 
-  <label>Exam Date:</label>
-  <input type="date" id="examDate"><br><br>
+    <section class="input-grid">
+      <div>
+        <label for="examDate">Exam Date</label>
+        <input type="date" id="examDate" value="2026-04-04">
+      </div>
+      <div>
+        <label for="topics">Number of Topics</label>
+        <input type="number" id="topics" min="1" value="13">
+      </div>
+      <div>
+        <label for="hoursPerWeek">Hours Available Per Week</label>
+        <input type="number" id="hoursPerWeek" min="1" step="0.5" value="20">
+      </div>
+    </section>
 
-  <label>Number of Topics:</label>
-  <input type="number" id="topics"><br><br>
+    <section class="topics-box">
+      <h2>FM Subjects/Topics from Syllabus</h2>
+      <p>Use these as your topic checklist. The planner starts with all topics left to study.</p>
+      <ul id="topicList"></ul>
+    </section>
 
-  <label>Hours Available Per Week:</label>
-  <input type="number" id="hoursPerWeek"><br><br>
+    <button id="generateBtn" type="button">Generate Plan</button>
 
-  <button onclick="generatePlan()">Generate Plan</button>
-
-  <h2>Results</h2>
-  <p id="output"></p>
+    <section>
+      <h2>Results</h2>
+      <div id="output" class="result-grid"></div>
+      <p id="warning" class="warning"></p>
+    </section>
+  </main>
 
   <script>
-    function generatePlan() {
-      const examDate = new Date(document.getElementById("examDate").value);
-      const topics = parseFloat(document.getElementById("topics").value);
-      const hoursPerWeek = parseFloat(document.getElementById("hoursPerWeek").value);
+    const fmTopics = [
+      "Time value of money and accumulation/discount factors",
+      "Simple interest/discount and compound interest",
+      "Nominal vs. effective rates and force of interest",
+      "Cash-flow valuation and equation of value",
+      "Annuities (immediate, due, perpetuities, varying payments)",
+      "Loan amortization and sinking funds",
+      "Bonds, yields, premiums/discounts, and callable features",
+      "Duration, convexity, and immunization basics",
+      "No-arbitrage pricing and risk-neutral valuation",
+      "Forwards, futures, and swaps",
+      "Option payoffs and option trading strategies",
+      "Put-call parity and option bounds",
+      "Binomial and Black-Scholes option pricing"
+    ];
 
+    function renderTopicList() {
+      const topicList = document.getElementById("topicList");
+      topicList.innerHTML = fmTopics
+        .map((topic, index) => `<li>${index + 1}. ${topic}</li>`)
+        .join("");
+      document.getElementById("topics").value = fmTopics.length;
+    }
+
+    function generatePlan() {
+      const examDateValue = document.getElementById("examDate").value;
+      const topics = Number(document.getElementById("topics").value);
+      const hoursPerWeek = Number(document.getElementById("hoursPerWeek").value);
+      const output = document.getElementById("output");
+      const warning = document.getElementById("warning");
+
+      warning.textContent = "";
+      output.innerHTML = "";
+
+      if (!examDateValue || topics <= 0 || hoursPerWeek <= 0) {
+        warning.textContent = "Please enter a valid exam date, topic count, and weekly hours.";
+        return;
+      }
+
+      const examDate = new Date(`${examDateValue}T23:59:59`);
       const today = new Date();
-      const diffTime = examDate - today;
+      const diffTime = examDate.getTime() - today.getTime();
       const daysUntilExam = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+      if (daysUntilExam <= 0) {
+        warning.textContent = "The exam date must be in the future.";
+        return;
+      }
 
       const totalStudyHours = (daysUntilExam / 7) * hoursPerWeek;
       const hoursPerTopic = totalStudyHours / topics;
       const dailyStudyTime = totalStudyHours / daysUntilExam;
 
-      document.getElementById("output").innerHTML = `
-        Days until exam: ${daysUntilExam}<br>
-        Total study hours available: ${totalStudyHours.toFixed(2)}<br>
-        Equal hours per topic: ${hoursPerTopic.toFixed(2)}<br>
-        Suggested daily study time: ${dailyStudyTime.toFixed(2)} hours<br>
-        Topics left to study: ${topics}
-      `;
+      const results = [
+        ["Days until exam", `${daysUntilExam}`],
+        ["Total study hours available", `${totalStudyHours.toFixed(1)} hours`],
+        ["Equal hours per topic", `${hoursPerTopic.toFixed(1)} hours/topic`],
+        ["Suggested daily study time", `${dailyStudyTime.toFixed(1)} hours/day`],
+        ["Topics left to study", `${topics}`]
+      ];
+
+      output.innerHTML = results
+        .map(([label, value]) => `
+          <article class="result-item">
+            <div class="result-label">${label}</div>
+            <div class="result-value">${value}</div>
+          </article>
+        `)
+        .join("");
     }
+
+    document.getElementById("generateBtn").addEventListener("click", generatePlan);
+    renderTopicList();
   </script>
 </body>
 </html>
-
