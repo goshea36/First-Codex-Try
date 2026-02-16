@@ -1,2 +1,48 @@
-<h1>Test site</h1>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Exam FM Study Planner</title>
+</head>
+<body>
+  <h1>Exam FM Study Planner</h1>
+
+  <label>Exam Date:</label>
+  <input type="date" id="examDate"><br><br>
+
+  <label>Number of Topics:</label>
+  <input type="number" id="topics"><br><br>
+
+  <label>Hours Available Per Week:</label>
+  <input type="number" id="hoursPerWeek"><br><br>
+
+  <button onclick="generatePlan()">Generate Plan</button>
+
+  <h2>Results</h2>
+  <p id="output"></p>
+
+  <script>
+    function generatePlan() {
+      const examDate = new Date(document.getElementById("examDate").value);
+      const topics = parseFloat(document.getElementById("topics").value);
+      const hoursPerWeek = parseFloat(document.getElementById("hoursPerWeek").value);
+
+      const today = new Date();
+      const diffTime = examDate - today;
+      const daysUntilExam = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+      const totalStudyHours = (daysUntilExam / 7) * hoursPerWeek;
+      const hoursPerTopic = totalStudyHours / topics;
+      const dailyStudyTime = totalStudyHours / daysUntilExam;
+
+      document.getElementById("output").innerHTML = `
+        Days until exam: ${daysUntilExam}<br>
+        Total study hours available: ${totalStudyHours.toFixed(2)}<br>
+        Equal hours per topic: ${hoursPerTopic.toFixed(2)}<br>
+        Suggested daily study time: ${dailyStudyTime.toFixed(2)} hours<br>
+        Topics left to study: ${topics}
+      `;
+    }
+  </script>
+</body>
+</html>
 
