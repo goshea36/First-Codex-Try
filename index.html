@@ -160,59 +160,6 @@
       margin-top: 0.8rem;
     }
 
-    .allocation-box {
-      margin-top: 1.1rem;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      overflow: hidden;
-      background: #fff;
-    }
-
-    .allocation-header {
-      margin: 0;
-      padding: 0.85rem 1rem;
-      background: var(--accent-bg);
-      border-bottom: 1px solid var(--border);
-      color: #2a3d62;
-      font-size: 1rem;
-    }
-
-    .allocation-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.95rem;
-    }
-
-    .allocation-table th,
-    .allocation-table td {
-      text-align: left;
-      padding: 0.65rem 0.8rem;
-      border-bottom: 1px solid #e9effb;
-      vertical-align: top;
-    }
-
-    .allocation-table th {
-      color: #4d6187;
-      font-weight: 600;
-      background: #fbfdff;
-    }
-
-    .allocation-table tr:last-child td {
-      border-bottom: none;
-    }
-
-    .hours-chip {
-      display: inline-block;
-      min-width: 5rem;
-      text-align: center;
-      padding: 0.2rem 0.45rem;
-      border-radius: 999px;
-      background: #edf3ff;
-      color: #21407d;
-      font-weight: 700;
-      font-size: 0.85rem;
-    }
-
     @media (max-width: 640px) {
       body {
         padding-top: 1.5rem;
@@ -331,6 +278,11 @@
         return;
       }
 
+      if (topics > fmTopics.length) {
+        warning.textContent = `Only ${fmTopics.length} syllabus topics are available in the planner.`;
+        return;
+      }
+
       const examDate = new Date(`${examDateValue}T23:59:59`);
       const today = new Date();
       const diffTime = examDate.getTime() - today.getTime();
@@ -341,9 +293,8 @@
         return;
       }
 
-      const weeksUntilExam = daysUntilExam / 7;
-      const totalStudyHours = weeksUntilExam * hoursPerWeek;
-      const dailyStudyTime = hoursPerWeek / studyDaysPerWeek;
+      const totalStudyHours = (daysUntilExam / 7) * hoursPerWeek;
+      const dailyStudyTime = totalStudyHours / daysUntilExam;
       const selectedTopics = fmTopics.slice(0, topics);
       const selectedWeights = topicImportanceWeights.slice(0, topics);
       const totalWeight = selectedWeights.reduce((sum, weight) => sum + weight, 0);
@@ -359,7 +310,6 @@
         ["Days until exam", `${daysUntilExam}`],
         ["Total study hours available", `${totalStudyHours.toFixed(1)} hours`],
         ["Suggested daily study time", `${dailyStudyTime.toFixed(1)} hours/day`],
-        ["Study days per week", `${studyDaysPerWeek}`],
         ["Topics left to study", `${topics}`],
         ["Weighting basis", `Relative importance (max ${maxWeight.toFixed(2)})`]
       ];
