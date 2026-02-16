@@ -202,6 +202,19 @@
     <section>
       <h2>Results</h2>
       <div id="output" class="result-grid"></div>
+      <div id="allocation" class="allocation-box" hidden>
+        <h3 class="allocation-header">Weighted topic-by-topic study plan</h3>
+        <table class="allocation-table">
+          <thead>
+            <tr>
+              <th>Topic</th>
+              <th>Importance weight</th>
+              <th>Planned study time</th>
+            </tr>
+          </thead>
+          <tbody id="allocationBody"></tbody>
+        </table>
+      </div>
       <p id="warning" class="warning"></p>
     </section>
   </main>
@@ -223,6 +236,11 @@
       "Binomial and Black-Scholes option pricing"
     ];
 
+    // Relative importance from core FM focus areas; higher = more study time.
+    const topicImportanceWeights = [
+      1.0, 1.0, 1.1, 1.1, 1.35, 1.25, 1.3, 1.1, 1.15, 1.2, 1.4, 1.2, 1.45
+    ];
+
     function renderTopicList() {
       const topicList = document.getElementById("topicList");
       topicList.innerHTML = fmTopics
@@ -237,12 +255,21 @@
       const hoursPerWeek = Number(document.getElementById("hoursPerWeek").value);
       const output = document.getElementById("output");
       const warning = document.getElementById("warning");
+      const allocation = document.getElementById("allocation");
+      const allocationBody = document.getElementById("allocationBody");
 
       warning.textContent = "";
       output.innerHTML = "";
+      allocationBody.innerHTML = "";
+      allocation.hidden = true;
 
       if (!examDateValue || topics <= 0 || hoursPerWeek <= 0) {
         warning.textContent = "Please enter a valid exam date, topic count, and weekly hours.";
+        return;
+      }
+
+      if (topics > fmTopics.length) {
+        warning.textContent = `Only ${fmTopics.length} syllabus topics are available in the planner.`;
         return;
       }
 
@@ -257,15 +284,24 @@
       }
 
       const totalStudyHours = (daysUntilExam / 7) * hoursPerWeek;
-      const hoursPerTopic = totalStudyHours / topics;
       const dailyStudyTime = totalStudyHours / daysUntilExam;
+      const selectedTopics = fmTopics.slice(0, topics);
+      const selectedWeights = topicImportanceWeights.slice(0, topics);
+      const totalWeight = selectedWeights.reduce((sum, weight) => sum + weight, 0);
 
+      const weightedAllocations = selectedTopics.map((topic, index) => {
+        const weight = selectedWeights[index];
+        const hours = (weight / totalWeight) * totalStudyHours;
+        return { topic, weight, hours };
+      });
+
+      const maxWeight = Math.max(...selectedWeights);
       const results = [
         ["Days until exam", `${daysUntilExam}`],
         ["Total study hours available", `${totalStudyHours.toFixed(1)} hours`],
-        ["Equal hours per topic", `${hoursPerTopic.toFixed(1)} hours/topic`],
         ["Suggested daily study time", `${dailyStudyTime.toFixed(1)} hours/day`],
-        ["Topics left to study", `${topics}`]
+        ["Topics left to study", `${topics}`],
+        ["Weighting basis", `Relative importance (max ${maxWeight.toFixed(2)})`]
       ];
 
       output.innerHTML = results
@@ -276,6 +312,17 @@
           </article>
         `)
         .join("");
+
+      allocationBody.innerHTML = weightedAllocations
+        .map(({ topic, weight, hours }, index) => `
+          <tr>
+            <td>${index + 1}. ${topic}</td>
+            <td>${weight.toFixed(2)}</td>
+            <td><span class="hours-chip">${hours.toFixed(1)} hrs</span></td>
+          </tr>
+        `)
+        .join("");
+      allocation.hidden = false;
     }
 
     document.getElementById("generateBtn").addEventListener("click", generatePlan);
