@@ -8,9 +8,9 @@ Simple single-page web app to create an FM study plan.
 - Calculations for:
   - Days until exam
   - Total study hours available
-  - Equal hours per topic
   - Suggested daily study time
   - Topics left to study
+- Weighted topic allocations based on relative topic importance, including planned hours for each topic.
 
 ## Run locally
 Open `index.html` in your browser.
