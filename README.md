@@ -3,7 +3,7 @@
 Simple single-page web app to create an FM study plan.
 
 ## What it includes
-- Inputs for exam date, number of topics, and hours available per week.
+- Inputs for exam date, number of topics, hours available per week, and study days per week.
 - A built-in list of Exam FM subjects/topics.
 - Calculations for:
   - Days until exam
