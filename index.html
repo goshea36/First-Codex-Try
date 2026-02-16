@@ -128,6 +128,45 @@
       padding-left: 1.25rem;
     }
 
+    .checklist {
+      list-style: none;
+      padding-left: 0;
+      margin: 0.75rem 0 0;
+      display: grid;
+      gap: 0.45rem;
+    }
+
+    .checklist li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.55rem;
+      color: #2a3d62;
+    }
+
+    .checklist input[type="checkbox"] {
+      margin-top: 0.18rem;
+      accent-color: var(--primary);
+      width: 1rem;
+      height: 1rem;
+      cursor: pointer;
+    }
+
+    .topic-label {
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .topic-label.completed {
+      text-decoration: line-through;
+      color: #6d7f9f;
+    }
+
+    .finished-heading {
+      margin: 1rem 0 0.35rem;
+      font-size: 0.96rem;
+      color: #40557f;
+    }
+
     .result-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -197,8 +236,10 @@
 
     <section class="topics-box">
       <h2>FM Subjects/Topics from Syllabus</h2>
-      <p>Use these as your topic checklist. The planner starts with all topics left to study.</p>
-      <ul id="topicList"></ul>
+      <p>Use these as your topic checklist. Check completed topics to remove them from the remaining plan.</p>
+      <ul id="topicList" class="checklist"></ul>
+      <h3 class="finished-heading">Finished Topics</h3>
+      <ul id="finishedTopicList" class="checklist"></ul>
     </section>
 
     <button id="generateBtn" type="button">Generate Plan</button>
@@ -246,16 +287,37 @@
     ];
 
     function renderTopicList() {
+      const topicCount = getSelectedTopicCount();
       const topicList = document.getElementById("topicList");
-      topicList.innerHTML = fmTopics
-        .map((topic, index) => `<li>${index + 1}. ${topic}</li>`)
+      const finishedTopicList = document.getElementById("finishedTopicList");
+      const selectedTopics = fmTopics.slice(0, topicCount);
+
+      topicList.innerHTML = selectedTopics
+        .map((topic, index) => {
+          const checked = completedTopicIndexes.has(index);
+          return `
+            <li>
+              <input type="checkbox" id="topic-${index}" data-topic-index="${index}" ${checked ? "checked" : ""}>
+              <label class="topic-label ${checked ? "completed" : ""}" for="topic-${index}">${index + 1}. ${topic}</label>
+            </li>
+          `;
+        })
         .join("");
-      document.getElementById("topics").value = fmTopics.length;
+
+      const finishedTopics = selectedTopics
+        .map((topic, index) => ({ topic, index }))
+        .filter(({ index }) => completedTopicIndexes.has(index));
+
+      finishedTopicList.innerHTML = finishedTopics.length
+        ? finishedTopics
+          .map(({ topic, index }) => `<li>${index + 1}. ${topic}</li>`)
+          .join("")
+        : "<li>No finished topics yet.</li>";
     }
 
     function generatePlan() {
       const examDateValue = document.getElementById("examDate").value;
-      const topics = Number(document.getElementById("topics").value);
+      const topicCount = getSelectedTopicCount();
       const hoursPerWeek = Number(document.getElementById("hoursPerWeek").value);
       const studyDaysPerWeek = Number(document.getElementById("studyDaysPerWeek").value);
       const output = document.getElementById("output");
@@ -336,7 +398,24 @@
     }
 
     document.getElementById("generateBtn").addEventListener("click", generatePlan);
-    renderTopicList();
+    document.getElementById("topicList").addEventListener("change", (event) => {
+      if (!event.target.matches('input[type="checkbox"][data-topic-index]')) {
+        return;
+      }
+      const topicIndex = Number(event.target.getAttribute("data-topic-index"));
+      if (event.target.checked) {
+        completedTopicIndexes.add(topicIndex);
+      } else {
+        completedTopicIndexes.delete(topicIndex);
+      }
+      refreshPlanner();
+    });
+
+    ["examDate", "topics", "hoursPerWeek", "studyDaysPerWeek"].forEach((id) => {
+      document.getElementById(id).addEventListener("input", refreshPlanner);
+    });
+
+    refreshPlanner();
   </script>
 </body>
 </html>
