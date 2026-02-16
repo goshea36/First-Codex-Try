@@ -7,73 +7,120 @@
   <style>
     :root {
       color-scheme: light;
-      font-family: Arial, Helvetica, sans-serif;
+      font-family: "Inter", "Segoe UI", Arial, Helvetica, sans-serif;
+      --bg: #eef3ff;
+      --panel: #ffffff;
+      --text: #19243a;
+      --muted: #5b6f95;
+      --primary: #315fd8;
+      --primary-dark: #244fb3;
+      --border: #d8e2f6;
+      --accent-bg: #f4f7ff;
     }
 
     body {
       margin: 0;
-      background: #f5f7fb;
-      color: #202938;
-      padding: 2rem 1rem;
+      background:
+        radial-gradient(circle at 10% 0%, #ffffff 0%, transparent 40%),
+        radial-gradient(circle at 90% 10%, #dfe9ff 0%, transparent 30%),
+        var(--bg);
+      color: var(--text);
+      padding: 2.5rem 1rem;
+      line-height: 1.45;
     }
 
     .container {
       max-width: 900px;
       margin: 0 auto;
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-      padding: 1.5rem;
+      background: var(--panel);
+      border-radius: 16px;
+      box-shadow: 0 18px 45px rgba(40, 74, 148, 0.14);
+      padding: 1.75rem;
+      border: 1px solid rgba(216, 226, 246, 0.85);
     }
 
     h1,
     h2 {
       margin-top: 0;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+    }
+
+    h1 {
+      margin-bottom: 0.35rem;
+      font-size: clamp(1.6rem, 2.5vw, 2rem);
+    }
+
+    .subtitle {
+      margin: 0 0 1.3rem;
+      color: var(--muted);
     }
 
     .input-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 1rem;
-      margin-bottom: 1rem;
+      margin-bottom: 1.25rem;
     }
 
     label {
       display: block;
       font-weight: 600;
       margin-bottom: 0.4rem;
+      color: #2b3f66;
     }
 
     input {
       width: 100%;
       box-sizing: border-box;
-      padding: 0.5rem;
-      border: 1px solid #c7d2e3;
-      border-radius: 8px;
+      padding: 0.58rem 0.7rem;
+      border: 1px solid #c7d5ee;
+      border-radius: 10px;
       font-size: 1rem;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      background: #fcfdff;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(49, 95, 216, 0.18);
     }
 
     button {
-      background: #2c5fd5;
+      background: linear-gradient(145deg, #3868e2, #2b57ca);
       color: #fff;
       border: none;
-      border-radius: 8px;
-      padding: 0.6rem 1rem;
+      border-radius: 10px;
+      padding: 0.7rem 1.1rem;
       font-size: 1rem;
+      font-weight: 600;
       cursor: pointer;
-      margin: 0.5rem 0 1rem;
+      margin: 0.15rem 0 1.15rem;
+      box-shadow: 0 8px 20px rgba(49, 95, 216, 0.25);
+      transition: transform 0.15s ease, box-shadow 0.2s ease, background 0.2s ease;
     }
 
     button:hover {
-      background: #244fb3;
+      background: linear-gradient(145deg, #2f5dd5, #244fb3);
+      transform: translateY(-1px);
+      box-shadow: 0 12px 25px rgba(36, 79, 179, 0.28);
+    }
+
+    button:active {
+      transform: translateY(0);
     }
 
     .topics-box {
-      background: #f0f4fc;
-      border: 1px solid #dce6f8;
-      border-radius: 10px;
+      background: var(--accent-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
       padding: 1rem;
-      margin-bottom: 1rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .topics-box p {
+      color: var(--muted);
     }
 
     ul {
@@ -88,21 +135,23 @@
     }
 
     .result-item {
-      border: 1px solid #dce6f8;
-      border-radius: 10px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
       padding: 0.8rem;
-      background: #fbfcff;
+      background: #fcfdff;
+      box-shadow: 0 2px 0 rgba(223, 233, 252, 0.8);
     }
 
     .result-label {
       font-size: 0.9rem;
-      color: #4b5e80;
+      color: #4d6187;
       margin-bottom: 0.2rem;
     }
 
     .result-value {
       font-size: 1.2rem;
       font-weight: 700;
+      color: #1c315c;
     }
 
     .warning {
@@ -110,12 +159,22 @@
       font-weight: 600;
       margin-top: 0.8rem;
     }
+
+    @media (max-width: 640px) {
+      body {
+        padding-top: 1.5rem;
+      }
+
+      .container {
+        padding: 1.2rem;
+      }
+    }
   </style>
 </head>
 <body>
   <main class="container">
     <h1>Exam FM Study Planner</h1>
-    <p>Starting from the beginning with a 20-hour/week schedule.</p>
+    <p class="subtitle">Starting from the beginning with a 20-hour/week schedule.</p>
 
     <section class="input-grid">
       <div>
