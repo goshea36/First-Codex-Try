@@ -25,23 +25,6 @@ function getEl(id) {
   return document.getElementById(id);
 }
 
-function hasRequiredElements() {
-  const requiredIds = [
-    "generateBtn",
-    "topicList",
-    "finishedTopicList",
-    "examDate",
-    "topics",
-    "hoursPerWeek",
-    "studyDaysPerWeek",
-    "output",
-    "warning",
-    "allocation",
-    "allocationBody"
-  ];
-  return requiredIds.every((id) => Boolean(getEl(id)));
-}
-
 function getSelectedTopicCount() {
   const topicsInput = getEl("topics");
   const rawCount = Number(topicsInput.value);
@@ -212,17 +195,5 @@ function attachEventHandlers() {
   });
 }
 
-function initPlanner() {
-  if (!hasRequiredElements()) {
-    console.error("Planner failed to initialize: required DOM elements are missing.");
-    return;
-  }
-  attachEventHandlers();
-  refreshPlanner();
-}
-
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", initPlanner, { once: true });
-} else {
-  initPlanner();
-}
+attachEventHandlers();
+refreshPlanner();
