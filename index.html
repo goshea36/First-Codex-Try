@@ -7,78 +7,164 @@
   <style>
     :root {
       color-scheme: light;
-      font-family: Arial, Helvetica, sans-serif;
+      font-family: "Inter", "Segoe UI", Arial, Helvetica, sans-serif;
+      --bg: #eef3ff;
+      --panel: #ffffff;
+      --text: #19243a;
+      --muted: #5b6f95;
+      --primary: #315fd8;
+      --primary-dark: #244fb3;
+      --border: #d8e2f6;
+      --accent-bg: #f4f7ff;
     }
 
     body {
       margin: 0;
-      background: #f5f7fb;
-      color: #202938;
-      padding: 2rem 1rem;
+      background:
+        radial-gradient(circle at 10% 0%, #ffffff 0%, transparent 40%),
+        radial-gradient(circle at 90% 10%, #dfe9ff 0%, transparent 30%),
+        var(--bg);
+      color: var(--text);
+      padding: 2.5rem 1rem;
+      line-height: 1.45;
     }
 
     .container {
       max-width: 900px;
       margin: 0 auto;
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-      padding: 1.5rem;
+      background: var(--panel);
+      border-radius: 16px;
+      box-shadow: 0 18px 45px rgba(40, 74, 148, 0.14);
+      padding: 1.75rem;
+      border: 1px solid rgba(216, 226, 246, 0.85);
     }
 
     h1,
     h2 {
       margin-top: 0;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+    }
+
+    h1 {
+      margin-bottom: 0.35rem;
+      font-size: clamp(1.6rem, 2.5vw, 2rem);
+    }
+
+    .subtitle {
+      margin: 0 0 1.3rem;
+      color: var(--muted);
     }
 
     .input-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 1rem;
-      margin-bottom: 1rem;
+      margin-bottom: 1.25rem;
     }
 
     label {
       display: block;
       font-weight: 600;
       margin-bottom: 0.4rem;
+      color: #2b3f66;
     }
 
     input {
       width: 100%;
       box-sizing: border-box;
-      padding: 0.5rem;
-      border: 1px solid #c7d2e3;
-      border-radius: 8px;
+      padding: 0.58rem 0.7rem;
+      border: 1px solid #c7d5ee;
+      border-radius: 10px;
       font-size: 1rem;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      background: #fcfdff;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(49, 95, 216, 0.18);
     }
 
     button {
-      background: #2c5fd5;
+      background: linear-gradient(145deg, #3868e2, #2b57ca);
       color: #fff;
       border: none;
-      border-radius: 8px;
-      padding: 0.6rem 1rem;
+      border-radius: 10px;
+      padding: 0.7rem 1.1rem;
       font-size: 1rem;
+      font-weight: 600;
       cursor: pointer;
-      margin: 0.5rem 0 1rem;
+      margin: 0.15rem 0 1.15rem;
+      box-shadow: 0 8px 20px rgba(49, 95, 216, 0.25);
+      transition: transform 0.15s ease, box-shadow 0.2s ease, background 0.2s ease;
     }
 
     button:hover {
-      background: #244fb3;
+      background: linear-gradient(145deg, #2f5dd5, #244fb3);
+      transform: translateY(-1px);
+      box-shadow: 0 12px 25px rgba(36, 79, 179, 0.28);
+    }
+
+    button:active {
+      transform: translateY(0);
     }
 
     .topics-box {
-      background: #f0f4fc;
-      border: 1px solid #dce6f8;
-      border-radius: 10px;
+      background: var(--accent-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
       padding: 1rem;
-      margin-bottom: 1rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .topics-box p {
+      color: var(--muted);
     }
 
     ul {
       margin: 0.5rem 0 0;
       padding-left: 1.25rem;
+    }
+
+    .checklist {
+      list-style: none;
+      padding-left: 0;
+      margin: 0.75rem 0 0;
+      display: grid;
+      gap: 0.45rem;
+    }
+
+    .checklist li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.55rem;
+      color: #2a3d62;
+    }
+
+    .checklist input[type="checkbox"] {
+      margin-top: 0.18rem;
+      accent-color: var(--primary);
+      width: 1rem;
+      height: 1rem;
+      cursor: pointer;
+    }
+
+    .topic-label {
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .topic-label.completed {
+      text-decoration: line-through;
+      color: #6d7f9f;
+    }
+
+    .finished-heading {
+      margin: 1rem 0 0.35rem;
+      font-size: 0.96rem;
+      color: #40557f;
     }
 
     .result-grid {
@@ -88,21 +174,23 @@
     }
 
     .result-item {
-      border: 1px solid #dce6f8;
-      border-radius: 10px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
       padding: 0.8rem;
-      background: #fbfcff;
+      background: #fcfdff;
+      box-shadow: 0 2px 0 rgba(223, 233, 252, 0.8);
     }
 
     .result-label {
       font-size: 0.9rem;
-      color: #4b5e80;
+      color: #4d6187;
       margin-bottom: 0.2rem;
     }
 
     .result-value {
       font-size: 1.2rem;
       font-weight: 700;
+      color: #1c315c;
     }
 
     .warning {
@@ -110,12 +198,75 @@
       font-weight: 600;
       margin-top: 0.8rem;
     }
+
+    .allocation-box {
+      margin-top: 1.1rem;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .allocation-header {
+      margin: 0;
+      padding: 0.85rem 1rem;
+      background: var(--accent-bg);
+      border-bottom: 1px solid var(--border);
+      color: #2a3d62;
+      font-size: 1rem;
+    }
+
+    .allocation-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+    }
+
+    .allocation-table th,
+    .allocation-table td {
+      text-align: left;
+      padding: 0.65rem 0.8rem;
+      border-bottom: 1px solid #e9effb;
+      vertical-align: top;
+    }
+
+    .allocation-table th {
+      color: #4d6187;
+      font-weight: 600;
+      background: #fbfdff;
+    }
+
+    .allocation-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .hours-chip {
+      display: inline-block;
+      min-width: 5rem;
+      text-align: center;
+      padding: 0.2rem 0.45rem;
+      border-radius: 999px;
+      background: #edf3ff;
+      color: #21407d;
+      font-weight: 700;
+      font-size: 0.85rem;
+    }
+
+    @media (max-width: 640px) {
+      body {
+        padding-top: 1.5rem;
+      }
+
+      .container {
+        padding: 1.2rem;
+      }
+    }
   </style>
 </head>
 <body>
   <main class="container">
     <h1>Exam FM Study Planner</h1>
-    <p>Starting from the beginning with a 20-hour/week schedule.</p>
+    <p class="subtitle">Starting from the beginning with a 20-hour/week schedule.</p>
 
     <section class="input-grid">
       <div>
@@ -130,12 +281,18 @@
         <label for="hoursPerWeek">Hours Available Per Week</label>
         <input type="number" id="hoursPerWeek" min="1" step="0.5" value="20">
       </div>
+      <div>
+        <label for="studyDaysPerWeek">Study Days per Week</label>
+        <input type="number" id="studyDaysPerWeek" min="1" max="7" step="1" value="5">
+      </div>
     </section>
 
     <section class="topics-box">
       <h2>FM Subjects/Topics from Syllabus</h2>
-      <p>Use these as your topic checklist. The planner starts with all topics left to study.</p>
-      <ul id="topicList"></ul>
+      <p>Use these as your topic checklist. Check completed topics to remove them from the remaining plan.</p>
+      <ul id="topicList" class="checklist"></ul>
+      <h3 class="finished-heading">Finished Topics</h3>
+      <ul id="finishedTopicList" class="checklist"></ul>
     </section>
 
     <button id="generateBtn" type="button">Generate Plan</button>
@@ -143,6 +300,19 @@
     <section>
       <h2>Results</h2>
       <div id="output" class="result-grid"></div>
+      <div id="allocation" class="allocation-box" hidden>
+        <h3 class="allocation-header">Weighted topic-by-topic study plan</h3>
+        <table class="allocation-table">
+          <thead>
+            <tr>
+              <th>Topic</th>
+              <th>Importance weight</th>
+              <th>Planned study time</th>
+            </tr>
+          </thead>
+          <tbody id="allocationBody"></tbody>
+        </table>
+      </div>
       <p id="warning" class="warning"></p>
     </section>
   </main>
@@ -164,26 +334,72 @@
       "Binomial and Black-Scholes option pricing"
     ];
 
+    // Relative importance from core FM focus areas; higher = more study time.
+    const topicImportanceWeights = [
+      1.0, 1.0, 1.1, 1.1, 1.35, 1.25, 1.3, 1.1, 1.15, 1.2, 1.4, 1.2, 1.45
+    ];
+
+    const completedTopicIndexes = new Set();
+
+    function getSelectedTopicCount() {
+      const topicsInput = document.getElementById("topics");
+      const rawCount = Number(topicsInput.value);
+      if (!Number.isFinite(rawCount)) {
+        return 0;
+      }
+      const clampedCount = Math.min(Math.max(Math.floor(rawCount), 1), fmTopics.length);
+      if (clampedCount !== rawCount) {
+        topicsInput.value = clampedCount;
+      }
+      return clampedCount;
+    }
+
     function renderTopicList() {
+      const topicCount = getSelectedTopicCount();
       const topicList = document.getElementById("topicList");
-      topicList.innerHTML = fmTopics
-        .map((topic, index) => `<li>${index + 1}. ${topic}</li>`)
+      const finishedTopicList = document.getElementById("finishedTopicList");
+      const selectedTopics = fmTopics.slice(0, topicCount);
+
+      topicList.innerHTML = selectedTopics
+        .map((topic, index) => {
+          const checked = completedTopicIndexes.has(index);
+          return `
+            <li>
+              <input type="checkbox" id="topic-${index}" data-topic-index="${index}" ${checked ? "checked" : ""}>
+              <label class="topic-label ${checked ? "completed" : ""}" for="topic-${index}">${index + 1}. ${topic}</label>
+            </li>
+          `;
+        })
         .join("");
-      document.getElementById("topics").value = fmTopics.length;
+
+      const finishedTopics = selectedTopics
+        .map((topic, index) => ({ topic, index }))
+        .filter(({ index }) => completedTopicIndexes.has(index));
+
+      finishedTopicList.innerHTML = finishedTopics.length
+        ? finishedTopics
+          .map(({ topic, index }) => `<li>${index + 1}. ${topic}</li>`)
+          .join("")
+        : "<li>No finished topics yet.</li>";
     }
 
     function generatePlan() {
       const examDateValue = document.getElementById("examDate").value;
-      const topics = Number(document.getElementById("topics").value);
+      const topicCount = getSelectedTopicCount();
       const hoursPerWeek = Number(document.getElementById("hoursPerWeek").value);
+      const studyDaysPerWeek = Number(document.getElementById("studyDaysPerWeek").value);
       const output = document.getElementById("output");
       const warning = document.getElementById("warning");
+      const allocation = document.getElementById("allocation");
+      const allocationBody = document.getElementById("allocationBody");
 
       warning.textContent = "";
       output.innerHTML = "";
+      allocationBody.innerHTML = "";
+      allocation.hidden = true;
 
-      if (!examDateValue || topics <= 0 || hoursPerWeek <= 0) {
-        warning.textContent = "Please enter a valid exam date, topic count, and weekly hours.";
+      if (!examDateValue || topicCount <= 0 || hoursPerWeek <= 0 || studyDaysPerWeek < 1 || studyDaysPerWeek > 7) {
+        warning.textContent = "Please enter a valid exam date, topic count, weekly hours, and study days (1-7).";
         return;
       }
 
@@ -197,16 +413,41 @@
         return;
       }
 
-      const totalStudyHours = (daysUntilExam / 7) * hoursPerWeek;
-      const hoursPerTopic = totalStudyHours / topics;
-      const dailyStudyTime = totalStudyHours / daysUntilExam;
+      const selectedTopics = fmTopics.slice(0, topicCount);
+      const remainingAllocations = selectedTopics
+        .map((topic, index) => ({
+          topic,
+          index,
+          weight: topicImportanceWeights[index]
+        }))
+        .filter(({ index }) => !completedTopicIndexes.has(index));
 
+      const topicsLeft = remainingAllocations.length;
+      const topicsFinished = topicCount - topicsLeft;
+
+      const weeksUntilExam = daysUntilExam / 7;
+      const totalStudyHours = weeksUntilExam * hoursPerWeek;
+      const dailyStudyTime = hoursPerWeek / studyDaysPerWeek;
+      const totalWeight = remainingAllocations.reduce((sum, item) => sum + item.weight, 0);
+
+      const weightedAllocations = remainingAllocations.map(({ topic, index, weight }) => ({
+        topic,
+        index,
+        weight,
+        hours: totalWeight > 0 ? (weight / totalWeight) * totalStudyHours : 0
+      }));
+
+      const maxWeight = weightedAllocations.length
+        ? Math.max(...weightedAllocations.map(({ weight }) => weight))
+        : 0;
       const results = [
         ["Days until exam", `${daysUntilExam}`],
         ["Total study hours available", `${totalStudyHours.toFixed(1)} hours`],
-        ["Equal hours per topic", `${hoursPerTopic.toFixed(1)} hours/topic`],
         ["Suggested daily study time", `${dailyStudyTime.toFixed(1)} hours/day`],
-        ["Topics left to study", `${topics}`]
+        ["Study days per week", `${studyDaysPerWeek}`],
+        ["Topics finished", `${topicsFinished}`],
+        ["Topics left to study", `${topicsLeft}`],
+        ["Weighting basis", topicsLeft ? `Relative importance (max ${maxWeight.toFixed(2)})` : "All selected topics completed"]
       ];
 
       output.innerHTML = results
@@ -217,10 +458,48 @@
           </article>
         `)
         .join("");
+
+      if (topicsLeft === 0) {
+        warning.textContent = "Great job — all selected topics are marked complete.";
+        return;
+      }
+
+      allocationBody.innerHTML = weightedAllocations
+        .map(({ topic, index, weight, hours }) => `
+          <tr>
+            <td>${index + 1}. ${topic}</td>
+            <td>${weight.toFixed(2)}</td>
+            <td><span class="hours-chip">${hours.toFixed(1)} hrs</span></td>
+          </tr>
+        `)
+        .join("");
+      allocation.hidden = false;
+    }
+
+    function refreshPlanner() {
+      renderTopicList();
+      generatePlan();
     }
 
     document.getElementById("generateBtn").addEventListener("click", generatePlan);
-    renderTopicList();
+    document.getElementById("topicList").addEventListener("change", (event) => {
+      if (!event.target.matches('input[type="checkbox"][data-topic-index]')) {
+        return;
+      }
+      const topicIndex = Number(event.target.getAttribute("data-topic-index"));
+      if (event.target.checked) {
+        completedTopicIndexes.add(topicIndex);
+      } else {
+        completedTopicIndexes.delete(topicIndex);
+      }
+      refreshPlanner();
+    });
+
+    ["examDate", "topics", "hoursPerWeek", "studyDaysPerWeek"].forEach((id) => {
+      document.getElementById(id).addEventListener("input", refreshPlanner);
+    });
+
+    refreshPlanner();
   </script>
 </body>
 </html>
